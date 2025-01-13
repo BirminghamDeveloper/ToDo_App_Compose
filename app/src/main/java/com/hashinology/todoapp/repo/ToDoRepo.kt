@@ -2,15 +2,17 @@ package com.hashinology.todoapp.repo
 
 import com.hashinology.todoapp.data.ToDoDao
 import com.hashinology.todoapp.data.models.ToDoTask
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+@ViewModelScoped
 class ToDoRepo @Inject constructor(private val toDoDao: ToDoDao) {
-    val getAllTask: Flow<List<ToDoTask>> = toDoDao.getAll()
+    val getAllTasks: Flow<List<ToDoTask>> = toDoDao.getAll()
     val sortByLowPriority: Flow<List<ToDoTask>> = toDoDao.sortByLowPriority()
     val sortByHighPriority: Flow<List<ToDoTask>> = toDoDao.sortByHighPriority()
 
-    fun getSelectedTask(taskId: Int): Flow<List<ToDoTask>>{
+    fun getSelectedTask(taskId: Int): Flow<ToDoTask>{
         return toDoDao.getSelectedTask(taskId = taskId)
     }
 
