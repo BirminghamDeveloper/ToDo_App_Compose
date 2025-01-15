@@ -20,6 +20,7 @@ fun PriorityItem(priority: Priority) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Draw Circle using Canvas
         Canvas(modifier = Modifier.size(PRIORITY_INDICATOR_SIZE) ){
             drawCircle(color = priority.color)
         }

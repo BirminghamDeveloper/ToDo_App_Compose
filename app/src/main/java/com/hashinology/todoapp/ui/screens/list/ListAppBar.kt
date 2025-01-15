@@ -3,7 +3,9 @@
 package com.hashinology.todoapp.ui.screens.list
 
 import android.content.res.Configuration
-import android.provider.Contacts.Intents.UI
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
@@ -12,7 +14,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -21,26 +25,63 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.contentColorFor
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.hashinology.todoapp.R
 import com.hashinology.todoapp.component.PriorityItem
 import com.hashinology.todoapp.data.models.Priority
+import com.hashinology.todoapp.ui.theme.LARGE_PADDING
+import com.hashinology.todoapp.ui.theme.TOP_APP_BAR_HEIGHT
 import com.hashinology.todoapp.ui.theme.ToDoAppTheme
+import com.hashinology.todoapp.ui.viewmodels.SharedViewModel
+import com.hashinology.todoapp.util.SearchAppBarState
 
 @Composable
-fun ListAppBar() {
-    DefaultListAppBar(onSearchClicked = {}, onSortClicked = {})
+fun ListAppBar(
+    sharedViewModel: SharedViewModel,
+    searchAppBarState: SearchAppBarState,
+    searchTextState: String
+) {
+    /*
+    when(sharedViewModel.searchAppBarState.value){}
+     */
+    when(searchAppBarState){
+        SearchAppBarState.CLOSED -> {
+            DefaultListAppBar(
+                onSearchClicked = {
+                    sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
+                },
+                onSortClicked = {},
+                onDeleteClicked = { }
+            )
+        }
+        else -> {
+            SearchAppbar(
+                text = "",
+                onTextChange = {},
+                onCloseClicked = {},
+                onSearchClicked = {}
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultListAppBar(
     onSearchClicked: () -> Unit,
-    onSortClicked: (Priority) -> Unit
+    onSortClicked: (Priority) -> Unit,
+    onDeleteClicked: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -53,9 +94,24 @@ fun DefaultListAppBar(
             containerColor = MaterialTheme.colorScheme.primary
         ),
         actions = {
-            ListAppBarActions(onSearchClicked = onSearchClicked, onSortClicked = onSortClicked)
+            ListAppBarActions(
+                onSearchClicked = onSearchClicked,
+                onSortClicked = onSortClicked,
+                onDeleteClicked = onDeleteClicked
+            )
         }
     )
+}
+
+@Composable
+fun ListAppBarActions(
+    onSearchClicked: () -> Unit,
+    onSortClicked: (Priority) -> Unit,
+    onDeleteClicked: () -> Unit
+) {
+    SearchAction(onSearchClicked)
+    SortAction(onSortClicked)
+    DeleteAllAction(onDeleteClicked = onDeleteClicked)
 }
 
 @Composable
@@ -95,17 +151,37 @@ fun SortAction(onSortClicked: (Priority) -> Unit) {
                 text = { PriorityItem(Priority.NONE) }
             )
         }
+        /*// Creating otherway of DropMenue + items
+        DropdownMenu(
+            expanded = expanded.value,
+            onDismissRequest = {expanded.value = false}
+        ) {
+            repeat(3){
+                DropdownMenuItem(
+                    onClick = {
+                        expanded.value = false
+                        when(it){
+                            0 -> {
+                                //Low
+                                onSortClicked(Priority.LOW)
+                            }
+                            1 -> {
+                                //Medium
+                                onSortClicked(Priority.MEDIUM)
+                            }
+                            2 -> {
+                                //High
+                                onSortClicked(Priority.High)
+                            }
+                        }
+                    },
+                    text = {
+                        PriorityItem(Priority.entries[it])
+                    }
+                )
+            }
+        }*/
     }
-}
-
-
-@Composable
-fun ListAppBarActions(
-    onSearchClicked: () -> Unit,
-    onSortClicked: (Priority) -> Unit
-) {
-    SearchAction(onSearchClicked)
-    SortAction(onSortClicked)
 }
 
 @Composable
@@ -124,9 +200,126 @@ fun SearchAction(
 }
 
 @Composable
+fun DeleteAllAction(
+    onDeleteClicked: () -> Unit
+) {
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+    IconButton(
+        onClick = { expanded = true }
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_more_vert),
+            contentDescription = stringResource(R.string.sort_action),
+            tint = MaterialTheme.colorScheme.secondary
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                onClick = {
+                    onDeleteClicked()
+                    expanded = false
+                },
+                text = {
+                    Text(
+                        modifier = Modifier.padding(start = LARGE_PADDING),
+                        text = stringResource(R.string.delete_all_action),
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun SearchAppbar(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onCloseClicked: () -> Unit,
+    onSearchClicked: (String) -> Unit
+) {
+    TopAppBar(
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
+        title = {
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = text,
+                onValueChange = {
+                    onTextChange(it)
+                },
+                placeholder = {
+                    Text(
+                        modifier = Modifier.alpha(0.8f),
+                        text = "Search",
+                        color = Color.White,
+
+                        )
+                },
+                textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontSize = MaterialTheme.typography.titleSmall.fontSize
+                ),
+                singleLine = true,
+                leadingIcon = {
+                    IconButton(
+                        modifier = Modifier.alpha(0.8f),
+                        onClick = {}
+                    ){
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "Search Icon",
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
+                },
+                trailingIcon = {
+                    IconButton(onClick = {onCloseClicked()}) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_close),
+                            contentDescription = "Close Icon",
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {onSearchClicked(text)}
+                ),
+                colors = TextFieldDefaults.colors(
+                    cursorColor = MaterialTheme.colorScheme.secondary,
+                    focusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
+                )
+            )
+        }
+    )
+}
+
+@Composable
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun DefaultListAppBarPreview() {
     ToDoAppTheme {
-        DefaultListAppBar(onSearchClicked = {}, onSortClicked = {})
+        DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteClicked= {})
+    }
+}
+
+@Composable
+@Preview
+fun SearchAppbarPreview() {
+    ToDoAppTheme {
+        SearchAppbar(text = "", onTextChange = {}, onCloseClicked = {}, onSearchClicked = {})
     }
 }

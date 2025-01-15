@@ -72,9 +72,8 @@ dependencies {
     implementation(libs.datastore.preferences)
 
     // Dagger
-    implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
-
+    kapt(libs.dagger.hilt.android.compiler)
     implementation(libs.hilt.android) // Adds Hilt's runtime
-    kapt(libs.hilt.compiler) // Adds Hilt's annotation processor
+    implementation(libs.androidx.hilt.navigation.compose) // Navigation Compose for hilt
+
 }

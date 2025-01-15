@@ -4,11 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hashinology.todoapp.navigation.SetUpNavigation
 import com.hashinology.todoapp.ui.theme.ToDoAppTheme
+import com.hashinology.todoapp.ui.viewmodels.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -16,11 +20,15 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
             ToDoAppTheme {
+                val sharedViewModel: SharedViewModel = hiltViewModel()
                 navController = rememberNavController()
-                SetUpNavigation(navController)
+                SetUpNavigation(
+                    navController,
+                    sharedViewModel
+                )
             }
         }
     }
