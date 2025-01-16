@@ -45,6 +45,7 @@ import com.hashinology.todoapp.ui.theme.TOP_APP_BAR_HEIGHT
 import com.hashinology.todoapp.ui.theme.ToDoAppTheme
 import com.hashinology.todoapp.ui.viewmodels.SharedViewModel
 import com.hashinology.todoapp.util.SearchAppBarState
+import com.hashinology.todoapp.util.TrailingIconState
 
 @Composable
 fun ListAppBar(
@@ -55,7 +56,7 @@ fun ListAppBar(
     /*
     when(sharedViewModel.searchAppBarState.value){}
      */
-    when(searchAppBarState){
+    when (searchAppBarState) {
         SearchAppBarState.CLOSED -> {
             DefaultListAppBar(
                 onSearchClicked = {
@@ -65,11 +66,17 @@ fun ListAppBar(
                 onDeleteClicked = { }
             )
         }
+
         else -> {
             SearchAppbar(
-                text = "",
-                onTextChange = {},
-                onCloseClicked = {},
+                text = searchTextState,
+                onTextChange = { newText ->
+                    sharedViewModel.searchTextState.value = newText
+                },
+                onCloseClicked = {
+                    sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
+                    sharedViewModel.searchTextState.value = ""
+                },
                 onSearchClicked = {}
             )
         }
@@ -86,7 +93,7 @@ fun DefaultListAppBar(
     TopAppBar(
         title = {
             Text(
-                "Tasks",
+                stringResource(R.string.list_screens_title),
                 color = MaterialTheme.colorScheme.secondary
             )
         },
@@ -242,6 +249,11 @@ fun SearchAppbar(
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit
 ) {
+    var trailingIconState by remember {
+        mutableStateOf(
+            TrailingIconState.READY_TO_DELETE
+        )
+    }
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth(),
@@ -258,7 +270,7 @@ fun SearchAppbar(
                 placeholder = {
                     Text(
                         modifier = Modifier.alpha(0.8f),
-                        text = "Search",
+                        text = stringResource(R.string.search_placeholder),
                         color = Color.White,
 
                         )
@@ -272,19 +284,36 @@ fun SearchAppbar(
                     IconButton(
                         modifier = Modifier.alpha(0.8f),
                         onClick = {}
-                    ){
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Search,
-                            contentDescription = "Search Icon",
+                            contentDescription = stringResource(R.string.search_icon),
                             tint = MaterialTheme.colorScheme.secondary,
                         )
                     }
                 },
                 trailingIcon = {
-                    IconButton(onClick = {onCloseClicked()}) {
+                    IconButton(
+                        onClick = {
+                            when(trailingIconState){
+                                TrailingIconState.READY_TO_DELETE -> {
+                                    onTextChange("")
+                                    trailingIconState = TrailingIconState.READY_TO_CLOSEE
+                                }
+                                TrailingIconState.READY_TO_CLOSEE -> {
+                                    if (text.isNotEmpty()){
+                                        onTextChange("")
+                                    }else{
+                                        onCloseClicked()
+                                        trailingIconState = TrailingIconState.READY_TO_DELETE
+                                    }
+                                }
+                            }
+                        }
+                    ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_close),
-                            contentDescription = "Close Icon",
+                            contentDescription = stringResource(R.string.close_icon),
                             tint = MaterialTheme.colorScheme.secondary
                         )
                     }
@@ -293,7 +322,7 @@ fun SearchAppbar(
                     imeAction = ImeAction.Search
                 ),
                 keyboardActions = KeyboardActions(
-                    onSearch = {onSearchClicked(text)}
+                    onSearch = { onSearchClicked(text) }
                 ),
                 colors = TextFieldDefaults.colors(
                     cursorColor = MaterialTheme.colorScheme.secondary,
@@ -312,7 +341,7 @@ fun SearchAppbar(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun DefaultListAppBarPreview() {
     ToDoAppTheme {
-        DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteClicked= {})
+        DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteClicked = {})
     }
 }
 
