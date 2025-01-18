@@ -21,7 +21,13 @@ sharedViewModel: SharedViewModel
         navController = navController,
         startDestination = "list/-1"
     ){
-        listComposable(navigateToTaskScreen = screen.task, sharedViewModel)
-        taskComposable(navigateToListScreen = screen.list)
+        listComposable(
+            navigateToTaskScreen = screen.task,
+            sharedViewModel
+        )
+        taskComposable(
+            navigateToListScreen = screen.list,
+            sharedViewModel = sharedViewModel
+        )
     }
 }

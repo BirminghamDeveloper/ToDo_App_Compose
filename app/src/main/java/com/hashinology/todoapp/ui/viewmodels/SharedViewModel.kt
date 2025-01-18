@@ -9,6 +9,7 @@ import com.hashinology.todoapp.repo.ToDoRepo
 import com.hashinology.todoapp.util.RequestState
 import com.hashinology.todoapp.util.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,6 +38,17 @@ class SharedViewModel @Inject constructor(
             }
         }catch (e: Exception){
             _allTasks.value = RequestState.Error(e)
+        }
+    }
+
+    private val _selectedTask: MutableStateFlow<ToDoTask?> = MutableStateFlow(null)
+    val selectedTask: StateFlow<ToDoTask?> = _selectedTask
+
+    fun getSelectedTask(taskId: Int){
+        viewModelScope.launch {
+            repo.getSelectedTask(taskId = taskId).collect{task ->
+                _selectedTask.value = task
+            }
         }
     }
 }
