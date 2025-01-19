@@ -33,14 +33,16 @@ import com.hashinology.todoapp.util.RequestState
 
 @Composable
 fun ListContent(
+    modifier: Modifier,
     tasks: RequestState<List<ToDoTask>>,
     navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
-    if(tasks is RequestState.Success){
-        if (tasks.data.isEmpty()){
+    if (tasks is RequestState.Success) {
+        if (tasks.data.isEmpty()) {
             EmpyContent()
-        }else{
+        } else {
             DisplayTasks(
+                modifier = modifier,
                 tasks = tasks.data,
                 navigateToTaskScreen = navigateToTaskScreen
             )
@@ -50,16 +52,17 @@ fun ListContent(
 
 @Composable
 fun DisplayTasks(
+    modifier: Modifier,
     tasks: List<ToDoTask>,
     navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         items(
             items = tasks,
-            key = {task ->
+            key = { task ->
                 task.id
             }
-        ){ task ->
+        ) { task ->
             TaskItem(
                 toDoTask = task,
                 navigateToTaskScreen = navigateToTaskScreen
@@ -78,14 +81,14 @@ fun TaskItem(
         color = MaterialTheme.colorScheme.tertiary,
         shape = RectangleShape,
         shadowElevation = TASK_APP_BAR_HEIGHT,
-        onClick = {navigateToTaskScreen(toDoTask.id)}
-    ){
+        onClick = { navigateToTaskScreen(toDoTask.id) }
+    ) {
         Column(
             modifier = Modifier
                 .padding(LARGE_PADDING)
                 .fillMaxWidth()
         ) {
-            Row(){
+            Row() {
                 Text(
                     modifier = Modifier.weight(8f),
                     text = toDoTask.title,
@@ -94,19 +97,21 @@ fun TaskItem(
                     fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
-               Box(
-                   modifier = Modifier
-                       .fillMaxWidth()
-                       .weight(1f),
-                   contentAlignment = Alignment.TopEnd
-               ){
-                   Canvas(modifier = Modifier
-                       .size(PRIORITY_INDICATOR_SIZE)) {
-                       drawCircle(
-                           color = toDoTask.priority.color,
-                       )
-                   }
-               }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentAlignment = Alignment.TopEnd
+                ) {
+                    Canvas(
+                        modifier = Modifier
+                            .size(PRIORITY_INDICATOR_SIZE)
+                    ) {
+                        drawCircle(
+                            color = toDoTask.priority.color,
+                        )
+                    }
+                }
             }
             Text(
                 toDoTask.description,

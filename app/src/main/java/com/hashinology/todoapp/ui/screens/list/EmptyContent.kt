@@ -3,6 +3,7 @@ package com.hashinology.todoapp.ui.screens.list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -23,8 +24,8 @@ import com.hashinology.todoapp.ui.theme.MediumGray
 @Composable
 fun EmpyContent() {
     Column(modifier = Modifier
-        .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.primary),
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.onPrimary),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -38,7 +39,7 @@ fun EmpyContent() {
             text = stringResource(R.string.empty_content),
             color = MediumGray,
             fontWeight = FontWeight.Bold,
-            fontSize = MaterialTheme.typography.bodySmall.fontSize
+            fontSize = MaterialTheme.typography.titleSmall.fontSize
         )
     }
 }

@@ -23,7 +23,8 @@ object DatabaseModule {
         context,
         ToDoDatabase::class.java,
         DATABASE_NAME
-    ).build()
+    )
+        .build()
 
     @Singleton
     @Provides
