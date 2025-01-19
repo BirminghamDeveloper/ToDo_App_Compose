@@ -47,10 +47,10 @@ fun NewTaskAppBar(
         title = {
             Text(
                 text = stringResource(R.string.add_task),
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.secondary
             )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.onSurface),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
         actions = {
             AddAction(onAddclicked = navigateToListScreen)
         }
@@ -63,7 +63,7 @@ fun BackAction(onBackclicked: (Action) -> Unit) {
         Icon(
             imageVector = Icons.Filled.ArrowBack,
             contentDescription = stringResource(R.string.back_arrow),
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.secondary
         )
     }
 }
@@ -74,7 +74,7 @@ fun AddAction(onAddclicked: (Action) -> Unit) {
         Icon(
             imageVector = Icons.Filled.Check,
             contentDescription = stringResource(R.string.add_task),
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.secondary
         )
     }
 }
@@ -92,7 +92,7 @@ fun ExistingTaskAppBar(
         title = {
             Text(
                 text = selectedTask.title,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.tertiary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -111,7 +111,7 @@ fun CloseAction(onClosedclicked: (Action) -> Unit) {
         Icon(
             imageVector = Icons.Filled.Close,
             contentDescription = stringResource(R.string.close_icon),
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.secondary
         )
     }
 }
@@ -122,7 +122,7 @@ fun DeleteAction(onDeleteClicked: (Action) -> Unit) {
         Icon(
             imageVector = Icons.Filled.Delete,
             contentDescription = stringResource(R.string.delete_icon),
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.secondary
         )
     }
 }
@@ -133,7 +133,7 @@ fun UpdateAction(onUpdateClicked: (Action) -> Unit) {
         Icon(
             imageVector = Icons.Filled.Check,
             contentDescription = stringResource(R.string.update_icon),
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.secondary
         )
     }
 }

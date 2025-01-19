@@ -75,7 +75,7 @@ fun TaskItem(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.primary,
+        color = MaterialTheme.colorScheme.tertiary,
         shape = RectangleShape,
         shadowElevation = TASK_APP_BAR_HEIGHT,
         onClick = {navigateToTaskScreen(toDoTask.id)}
@@ -89,8 +89,8 @@ fun TaskItem(
                 Text(
                     modifier = Modifier.weight(8f),
                     text = toDoTask.title,
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
@@ -111,8 +111,8 @@ fun TaskItem(
             Text(
                 toDoTask.description,
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis

@@ -269,7 +269,7 @@ fun SearchAppbar(
                 },
                 placeholder = {
                     Text(
-                        modifier = Modifier.alpha(0.8f),
+                        modifier = Modifier.alpha(0.5f),
                         text = stringResource(R.string.search_placeholder),
                         color = Color.White,
 

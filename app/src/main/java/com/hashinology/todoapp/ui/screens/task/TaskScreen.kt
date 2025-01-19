@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.hashinology.todoapp.data.models.Priority
 import com.hashinology.todoapp.data.models.ToDoTask
 import com.hashinology.todoapp.util.Action
 
@@ -17,6 +18,15 @@ fun TaskScreen(
         topBar = {
             TaskAppBar(selectedTask = selectedTask,navigateToListScreen = navigateToListScreen)
         },
-        content = {}
+        content = {
+            TaskContent(
+                title = "",
+                onTitleChange = {},
+                description = "",
+                onDescriptionChange = {},
+                priority = Priority.LOW,
+                onPrioritySelected = {}
+            )
+        }
     )
 }
