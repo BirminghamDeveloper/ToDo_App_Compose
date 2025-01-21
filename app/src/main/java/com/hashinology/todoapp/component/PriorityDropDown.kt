@@ -54,7 +54,7 @@ fun PriorityDropDown(
             .clickable { expanded = true }
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
                 shape = MaterialTheme.shapes.small
             ),
         verticalAlignment = Alignment.CenterVertically
@@ -62,6 +62,7 @@ fun PriorityDropDown(
         Canvas(
             modifier = Modifier
                 .size(PRIORITY_INDICATOR_SIZE)
+                .weight(1f)
         ) {
             drawCircle(color = priority.color)
         }
@@ -72,7 +73,7 @@ fun PriorityDropDown(
         )
         IconButton(
             modifier = Modifier
-//                .alpha(0f)
+                .alpha(0.5f)
                 .rotate(degrees = angle)
                 .weight(1.5f),
             onClick = { expanded = true }

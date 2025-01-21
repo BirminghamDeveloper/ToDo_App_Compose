@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.hashinology.todoapp.R
 import com.hashinology.todoapp.component.PriorityDropDown
 import com.hashinology.todoapp.data.models.Priority
@@ -27,9 +28,11 @@ fun TaskContent(
     description: String,
     onDescriptionChange: (String) -> Unit,
     priority: Priority,
-    onPrioritySelected: (Priority) -> Unit
+    onPrioritySelected: (Priority) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier
+    Column(
+        modifier
         .fillMaxWidth()
         .background(MaterialTheme.colorScheme.background)
         .padding(all = LARGE_PADDING)

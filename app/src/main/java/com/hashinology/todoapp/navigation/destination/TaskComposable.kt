@@ -1,6 +1,7 @@
 package com.hashinology.todoapp.navigation.destination
 
 import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
@@ -8,6 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.hashinology.todoapp.ui.screens.task.TaskAppBar
+import com.hashinology.todoapp.ui.screens.task.TaskScreen
 import com.hashinology.todoapp.ui.viewmodels.SharedViewModel
 import com.hashinology.todoapp.util.Action
 import com.hashinology.todoapp.util.Constants.TASK_SCREEN
@@ -27,8 +29,13 @@ fun NavGraphBuilder.taskComposable(
         sharedViewModel.getSelectedTask(taskId = taskId)
         val selectedTask by sharedViewModel.selectedTask.collectAsState()
 
-        TaskAppBar(
+        LaunchedEffect(key1 = selectedTask) {
+            sharedViewModel.updateTaskFields(selectedTask = selectedTask)
+        }
+
+        TaskScreen(
             selectedTask = selectedTask,
+            sharedViewModel = sharedViewModel,
             navigateToListScreen = navigateToListScreen
         )
     }

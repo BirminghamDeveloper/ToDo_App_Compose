@@ -1,6 +1,7 @@
 package com.hashinology.todoapp.ui.screens.task
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -50,7 +51,7 @@ fun NewTaskAppBar(
                 color = MaterialTheme.colorScheme.secondary
             )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.onPrimary),
         actions = {
             AddAction(onAddclicked = navigateToListScreen)
         }
@@ -61,7 +62,7 @@ fun NewTaskAppBar(
 fun BackAction(onBackclicked: (Action) -> Unit) {
     IconButton(onClick = {onBackclicked(Action.NO_ACTION)}) {
         Icon(
-            imageVector = Icons.Filled.ArrowBack,
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = stringResource(R.string.back_arrow),
             tint = MaterialTheme.colorScheme.secondary
         )
@@ -97,7 +98,7 @@ fun ExistingTaskAppBar(
                 overflow = TextOverflow.Ellipsis
             )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.onSurface),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.onPrimary),
         actions = {
             DeleteAction(onDeleteClicked = navigateToListScreen)
             UpdateAction(onUpdateClicked = navigateToListScreen)
