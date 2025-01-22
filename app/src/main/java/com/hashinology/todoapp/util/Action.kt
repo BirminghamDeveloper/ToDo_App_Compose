@@ -11,19 +11,19 @@ enum class Action {
 
 fun String?.toAction(): Action{
     return when{
-        this == "Add" -> {
+        this == "ADD" -> {
             Action.ADD
         }
-        this == "Update" -> {
+        this == "UPDATE" -> {
             Action.UPDATE
         }
-        this == "Delete" -> {
+        this == "DELETE" -> {
             Action.DELETE
         }
-        this == "Delete All" -> {
+        this == "DELETE_ALL" -> {
             Action.DELETE_ALL
         }
-        this == "Undo" -> {
+        this == "UNDO" -> {
             Action.UNDO
         }
         else -> {

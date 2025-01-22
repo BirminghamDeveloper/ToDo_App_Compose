@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -21,8 +19,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.hashinology.todoapp.component.PriorityItem
 import com.hashinology.todoapp.data.models.Priority
 import com.hashinology.todoapp.data.models.ToDoTask
 import com.hashinology.todoapp.ui.theme.LARGE_PADDING
@@ -30,23 +26,49 @@ import com.hashinology.todoapp.ui.theme.PRIORITY_INDICATOR_SIZE
 import com.hashinology.todoapp.ui.theme.TASK_APP_BAR_HEIGHT
 import com.hashinology.todoapp.ui.theme.ToDoAppTheme
 import com.hashinology.todoapp.util.RequestState
+import com.hashinology.todoapp.util.SearchAppBarState
 
 @Composable
 fun ListContent(
     modifier: Modifier,
-    tasks: RequestState<List<ToDoTask>>,
+    allTasks: RequestState<List<ToDoTask>>,
+    searchedTasks: RequestState<List<ToDoTask>>,
+    searchAppBarState: SearchAppBarState,
     navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
-    if (tasks is RequestState.Success) {
-        if (tasks.data.isEmpty()) {
-            EmpyContent()
-        } else {
-            DisplayTasks(
+    if(searchAppBarState == SearchAppBarState.TRIGGERED){
+        if (searchedTasks is RequestState.Success){
+            HandleListContent(
                 modifier = modifier,
-                tasks = tasks.data,
+                tasks = searchedTasks.data,
                 navigateToTaskScreen = navigateToTaskScreen
             )
         }
+    }else{
+        if (allTasks is RequestState.Success){
+            HandleListContent(
+                modifier = modifier,
+                tasks = allTasks.data,
+                navigateToTaskScreen = navigateToTaskScreen
+            )
+        }
+    }
+}
+
+@Composable
+fun HandleListContent(
+    modifier: Modifier,
+    tasks: List<ToDoTask>,
+    navigateToTaskScreen: (taskId: Int) -> Unit
+) {
+    if (tasks.isEmpty()) {
+        EmpyContent()
+    } else {
+        DisplayTasks(
+            modifier = modifier,
+            tasks = tasks,
+            navigateToTaskScreen = navigateToTaskScreen
+        )
     }
 }
 

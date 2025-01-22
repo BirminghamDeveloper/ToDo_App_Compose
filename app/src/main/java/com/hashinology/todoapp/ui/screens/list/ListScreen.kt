@@ -1,28 +1,29 @@
 package com.hashinology.todoapp.ui.screens.list
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.hashinology.todoapp.R
 import com.hashinology.todoapp.ui.viewmodels.SharedViewModel
+import com.hashinology.todoapp.util.Action
 import com.hashinology.todoapp.util.SearchAppBarState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -42,12 +43,28 @@ fun ListScreen(
 //        Log.d("ListScreen", task.title)
 //    }
 
+    val searchedTasks by sharedViewModel.searchedTasks.collectAsState()
+
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
 
-    sharedViewModel.handleDatabaseActions(action = action)
+
+
+//    sharedViewModel.handleDatabaseActions(action = action)
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    DisplaySnackBar(
+        snackbarHostState = snackbarHostState,
+        handleDatabaseActions = { sharedViewModel.handleDatabaseActions(action) },
+        taskTitle = sharedViewModel.title.value,
+        action = action,
+        onUndoClicked = {
+            sharedViewModel.action.value = it
+        }
+    )
 
     Scaffold (
+        snackbarHost = { SnackbarHost( hostState = snackbarHostState) },
         topBar = {
             ListAppBar(
                 sharedViewModel = sharedViewModel,
@@ -58,7 +75,9 @@ fun ListScreen(
         content = {
             ListContent(
                 modifier = Modifier.padding(it),
-                tasks = allTasks,
+                allTasks = allTasks,
+                searchedTasks = searchedTasks,
+                searchAppBarState = searchAppBarState,
                 navigateToTaskScreen = navigateToTaskScreen
             )
         },
@@ -88,14 +107,52 @@ fun ListFab(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DisplaySnackBar (
-
+    snackbarHostState: SnackbarHostState,
+    handleDatabaseActions: () -> Unit,
+    onUndoClicked: (Action) -> Unit,
+    taskTitle: String,
+    action: Action
 ) {
+    handleDatabaseActions()
 
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = action) {
+        if (action != Action.NO_ACTION) {
+            val snackBarResult = snackbarHostState.showSnackbar(
+                message = setMessage(action = action, taskTitle = taskTitle),
+                actionLabel = setActionLabel(action)
+            )
+            undoDeleteTask(
+                action = action,
+                snackBarResult = snackBarResult,
+                onUndoClicked = onUndoClicked
+            )
+        }
+    }
 }
 
-/*
-@Composable
-@Preview
-fun ListScreenPreview(){
-    ListScreen(navigateToTaskScreen = {})
-}*/
+private fun setMessage(action: Action, taskTitle: String): String{
+    return when(action){
+        Action.DELETE_ALL -> "All Tasks Removed."
+        else -> "${action.name}: $taskTitle"
+    }
+}
+
+private fun setActionLabel(action: Action): String{
+    return if(action.name == "DELETE"){
+        "UNDO"
+    }else{
+        "OK"
+    }
+}
+
+private fun undoDeleteTask(
+    action: Action,
+    snackBarResult: SnackbarResult,
+    onUndoClicked: (Action) -> Unit
+){
+    if(snackBarResult == SnackbarResult.ActionPerformed && action == Action.DELETE){
+        onUndoClicked(Action.UNDO)
+    }
+}

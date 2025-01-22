@@ -8,16 +8,13 @@ import com.hashinology.todoapp.data.models.Priority
 import com.hashinology.todoapp.data.models.ToDoTask
 import com.hashinology.todoapp.repo.ToDoRepo
 import com.hashinology.todoapp.util.Action
-import com.hashinology.todoapp.util.Constants
 import com.hashinology.todoapp.util.Constants.MAX_TITLE_LENGTH
 import com.hashinology.todoapp.util.RequestState
 import com.hashinology.todoapp.util.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,6 +36,24 @@ class SharedViewModel @Inject constructor(
     private val _allTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.idle)
     val allTasks: StateFlow<RequestState<List<ToDoTask>>> = _allTasks
 //    val allTasks = _allTasks.asStateFlow()
+
+    private val _searchedTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.idle)
+    val searchedTasks: StateFlow<RequestState<List<ToDoTask>>> = _searchedTasks
+
+    fun searchDatabase(searchQuery: String){
+        _searchedTasks.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                repo.searchDatabase(searchQuery = "%$searchQuery%")
+                    .collect{searchedTask ->
+                        _searchedTasks.value = RequestState.Success(searchedTask)
+                    }
+            }
+        }catch (e: Exception){
+            _searchedTasks.value = RequestState.Error(e)
+        }
+        searchAppBarState.value = SearchAppBarState.TRIGGERED
+    }
 
     fun getAllTasks(){
         _allTasks.value = RequestState.Loading
@@ -73,6 +88,37 @@ class SharedViewModel @Inject constructor(
             )
             repo.addTask(toDoTask)
         }
+        searchAppBarState.value = SearchAppBarState.CLOSED
+    }
+
+    private fun updateTask(){
+        viewModelScope.launch(Dispatchers.IO) {
+            val toDoTask = ToDoTask(
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            repo.updateTask(toDoTask)
+        }
+    }
+
+    private fun deleteTask(){
+        viewModelScope.launch(Dispatchers.IO) {
+            val toDoTask = ToDoTask(
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            repo.deleteTask(toDoTask)
+        }
+    }
+
+    private fun deleteAllTasks(){
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteAllTask()
+        }
     }
 
     fun handleDatabaseActions(action: Action){
@@ -81,16 +127,16 @@ class SharedViewModel @Inject constructor(
                 addTask()
             }
             Action.UPDATE -> {
-
+                updateTask()
             }
             Action.DELETE -> {
-
+                deleteTask()
             }
             Action.DELETE_ALL -> {
-
+                deleteAllTasks()
             }
             Action.UNDO -> {
-
+                addTask()
             }
             else -> {
 

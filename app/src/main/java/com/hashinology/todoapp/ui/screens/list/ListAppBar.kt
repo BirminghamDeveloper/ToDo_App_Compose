@@ -4,7 +4,6 @@ package com.hashinology.todoapp.ui.screens.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -14,7 +13,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
@@ -33,17 +31,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.contentColorFor
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.hashinology.todoapp.R
 import com.hashinology.todoapp.component.PriorityItem
 import com.hashinology.todoapp.data.models.Priority
 import com.hashinology.todoapp.ui.theme.LARGE_PADDING
-import com.hashinology.todoapp.ui.theme.TOP_APP_BAR_HEIGHT
 import com.hashinology.todoapp.ui.theme.ToDoAppTheme
 import com.hashinology.todoapp.ui.viewmodels.SharedViewModel
+import com.hashinology.todoapp.util.Action
 import com.hashinology.todoapp.util.SearchAppBarState
 import com.hashinology.todoapp.util.TrailingIconState
 
@@ -63,7 +59,9 @@ fun ListAppBar(
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
                 },
                 onSortClicked = {},
-                onDeleteClicked = { }
+                onDeleteAllClicked = {
+                    sharedViewModel.action.value = Action.DELETE_ALL
+                }
             )
         }
 
@@ -77,7 +75,9 @@ fun ListAppBar(
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
                     sharedViewModel.searchTextState.value = ""
                 },
-                onSearchClicked = {}
+                onSearchClicked = {
+                    sharedViewModel.searchDatabase(searchQuery = it)
+                }
             )
         }
     }
@@ -88,7 +88,7 @@ fun ListAppBar(
 fun DefaultListAppBar(
     onSearchClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
-    onDeleteClicked: () -> Unit
+    onDeleteAllClicked: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -104,7 +104,7 @@ fun DefaultListAppBar(
             ListAppBarActions(
                 onSearchClicked = onSearchClicked,
                 onSortClicked = onSortClicked,
-                onDeleteClicked = onDeleteClicked
+                onDeleteAllClicked = onDeleteAllClicked
             )
         }
     )
@@ -114,11 +114,11 @@ fun DefaultListAppBar(
 fun ListAppBarActions(
     onSearchClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
-    onDeleteClicked: () -> Unit
+    onDeleteAllClicked: () -> Unit
 ) {
     SearchAction(onSearchClicked)
     SortAction(onSortClicked)
-    DeleteAllAction(onDeleteClicked = onDeleteClicked)
+    DeleteAllAction(onDeleteAllClicked = onDeleteAllClicked)
 }
 
 @Composable
@@ -208,7 +208,7 @@ fun SearchAction(
 
 @Composable
 fun DeleteAllAction(
-    onDeleteClicked: () -> Unit
+    onDeleteAllClicked: () -> Unit
 ) {
     var expanded by remember {
         mutableStateOf(false)
@@ -227,7 +227,7 @@ fun DeleteAllAction(
         ) {
             DropdownMenuItem(
                 onClick = {
-                    onDeleteClicked()
+                    onDeleteAllClicked()
                     expanded = false
                 },
                 text = {
@@ -341,7 +341,7 @@ fun SearchAppbar(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun DefaultListAppBarPreview() {
     ToDoAppTheme {
-        DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteClicked = {})
+        DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteAllClicked = {})
     }
 }
 
