@@ -1,6 +1,7 @@
 package com.hashinology.todoapp.ui.theme
 
 import android.provider.CalendarContract.Colors
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -19,5 +20,9 @@ val DarkGray = Color(0xFF141414)
 val LowPriorityColor = Color(0xFF00C980)
 val MediumPriorityColor = Color(0xFFFFC114)
 val HighPriorityColor = Color(0xFFFF4646)
-val NonePriorityColor = Color(0xFFFFFFFF)
+val NonePriorityColor = MediumGray
+
+val Colors.splashScreenBackground: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Purple80 else Color.White
 

@@ -76,4 +76,12 @@ dependencies {
     implementation(libs.hilt.android) // Adds Hilt's runtime
     implementation(libs.androidx.hilt.navigation.compose) // Navigation Compose for hilt
 
+    // For Preferences DataStore
+    implementation (libs.androidx.datastore.preferences.v111)
+
+    // For Proto DataStore
+    implementation (libs.androidx.datastore)
+
+    // Accompanist Navigation Animation
+    implementation (libs.accompanist.navigation.animation)
 }

@@ -5,9 +5,10 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.hashinology.todoapp.navigation.destination.listComposable
+import com.hashinology.todoapp.navigation.destination.splashComposable
 import com.hashinology.todoapp.navigation.destination.taskComposable
 import com.hashinology.todoapp.ui.viewmodels.SharedViewModel
-import com.hashinology.todoapp.util.Constants.LIST_SCREEN
+import com.hashinology.todoapp.util.Constants.SPLASH_SCREEN
 
 @Composable
 fun SetUpNavigation(
@@ -19,14 +20,19 @@ sharedViewModel: SharedViewModel
     }
     NavHost(
         navController = navController,
-        startDestination = "list/-1"
+//        startDestination = "list/-1"
+        startDestination = SPLASH_SCREEN
     ){
+        splashComposable(
+            navigateToTaskScreen = screen.splash,
+            sharedViewModel
+        )
         listComposable(
-            navigateToTaskScreen = screen.task,
+            navigateToTaskScreen = screen.list,
             sharedViewModel
         )
         taskComposable(
-            navigateToListScreen = screen.list,
+            navigateToListScreen = screen.task,
             sharedViewModel = sharedViewModel
         )
     }
