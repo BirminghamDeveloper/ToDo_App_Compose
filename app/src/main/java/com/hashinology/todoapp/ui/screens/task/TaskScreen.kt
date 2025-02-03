@@ -3,10 +3,16 @@ package com.hashinology.todoapp.ui.screens.task
 import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -27,6 +33,8 @@ fun TaskScreen(
     val priority: Priority by sharedViewModel.priority
 
     val localContext = LocalContext.current
+
+    BackHandler(onBackPressed = {navigateToListScreen(Action.NO_ACTION)})
 
     Scaffold(
         topBar = {
@@ -69,4 +77,28 @@ fun TaskScreen(
 
 fun displayToast(context: Context) {
     Toast.makeText(context, "Fields are Empty", Toast.LENGTH_SHORT).show()
+}
+
+@Composable
+fun BackHandler(
+    backDispatcher: OnBackPressedDispatcher? = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher,
+    onBackPressed: () -> Unit
+) {
+    val currentOnBackPressed by rememberUpdatedState(newValue = onBackPressed)
+
+    val backCallBack = remember {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                currentOnBackPressed()
+            }
+        }
+    }
+
+    DisposableEffect(key1 = backDispatcher) {
+        backDispatcher?.addCallback(backCallBack)
+
+        onDispose {
+            backCallBack.remove()
+        }
+    }
 }

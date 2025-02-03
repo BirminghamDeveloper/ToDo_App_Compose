@@ -61,7 +61,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // added
     // Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
@@ -82,6 +81,6 @@ dependencies {
     // For Proto DataStore
     implementation (libs.androidx.datastore)
 
-    // Accompanist Navigation Animation
-    implementation (libs.accompanist.navigation.animation)
+    /*// Accompanist Navigation Animation
+    implementation (libs.accompanist.navigation.animation)*/
 }
