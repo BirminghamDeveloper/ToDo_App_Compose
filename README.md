@@ -36,11 +36,11 @@ ToDo_App_Compose is a sleek and modern To-Do List Application built using Jetpac
 
 ToDo_App_Compose leverages several cutting-edge features of Jetpack Compose:
 
-- **Material 3 Components**: Implements the latest Material Design 3 components, aligning with modern Android design guidelines. :contentReference[oaicite:0]{index=0}
-- **Shared Element Transitions**: Enhances navigation with smooth transitions between shared elements across different composables. :contentReference[oaicite:1]{index=1}
-- **Lazy List Animations**: Provides animated additions and removals in task lists for a dynamic user experience. :contentReference[oaicite:2]{index=2}
-- **Declarative UI with Kotlin**: Utilizes Kotlin's powerful features like higher-order functions and lambda expressions for concise and readable UI code. :contentReference[oaicite:3]{index=3}
-- **Compose Multiplatform Readiness**: Lays the groundwork for future expansion to other platforms using Compose Multiplatform. :contentReference[oaicite:4]{index=4}
+- **Material 3 Components**: Implements the latest Material Design 3 components, aligning with modern Android design guidelines.
+- **Shared Element Transitions**: Enhances navigation with smooth transitions between shared elements across different composables. 
+- **Lazy List Animations**: Provides animated additions and removals in task lists for a dynamic user experience. 
+- **Declarative UI with Kotlin**: Utilizes Kotlin's powerful features like higher-order functions and lambda expressions for concise and readable UI code. 
+- **Compose Multiplatform Readiness**: Lays the groundwork for future expansion to other platforms using Compose Multiplatform. 
 
 ## Getting Started
 
