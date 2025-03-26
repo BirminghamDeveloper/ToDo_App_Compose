@@ -1,6 +1,6 @@
 # ToDo_App_Compose
 
-ToDo_App_Compose is a sleek and modern to-do list application built using Jetpack Compose. Designed with developers in mind, it showcases the latest features of Android's UI toolkit, offering an intuitive and efficient task management experience.
+ToDo_App_Compose is a sleek and modern To-Do List Application built using Jetpack Compose. Designed with developers in mind, it showcases the latest features of Android's UI toolkit, offering an intuitive and efficient task management experience.
 
 ## Key Features
 
